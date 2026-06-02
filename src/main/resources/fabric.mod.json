@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "hazardous_redstone",
+  "version": "${version}",
+  "name": "Hazardous Redstone",
+  "description": "Touching redstone will hurt you, just like real life electricity!",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/hazardous_redstone/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "io.github.derexxd.hazardous_redstone.client.Hazardous_redstoneDataGenerator"
+    ],
+    "client": [
+      "io.github.derexxd.hazardous_redstone.client.Hazardous_redstoneClient"
+    ],
+    "main": [
+      "io.github.derexxd.hazardous_redstone.Hazardous_redstone"
+    ]
+  },
+  "mixins": [
+    "hazardous_redstone.mixins.json",
+    {
+      "config": "hazardous_redstone.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

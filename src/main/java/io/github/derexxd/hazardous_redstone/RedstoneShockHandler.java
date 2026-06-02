@@ -65,7 +65,7 @@ public final class RedstoneShockHandler {
             dx /= len;
             dz /= len;
 
-            double knockbackStrength = Math.min(1.5D, 0.2D + (damage * 0.15D));
+            double knockbackStrength = Math.min(0.5D, 0.2D + (damage * 0.15D));
             entity.takeKnockback(knockbackStrength, dx, dz);
         }
     }

@@ -28,9 +28,15 @@ public final class RedstoneShockHandler {
             return;
         }
 
-        BlockPos blockPos = entity.getSteppingPos();
-        BlockState blockState = world.getBlockState(blockPos);
-        float damage = getShockDamage(blockState);
+        BlockPos steppingPos = entity.getSteppingPos();
+        BlockPos entityPos = entity.getBlockPos();
+        BlockState stateAtStepping = world.getBlockState(steppingPos);
+        BlockState stateAtEntity = world.getBlockState(entityPos);
+
+        float damageStepping = getShockDamage(stateAtStepping);
+        float damageEntity = getShockDamage(stateAtEntity);
+        float damage = Math.max(damageStepping, damageEntity);
+        BlockPos sourcePos = damageStepping >= damageEntity ? steppingPos : entityPos;
 
         if (damage <= 0.0F) {
             return;
@@ -46,6 +52,21 @@ public final class RedstoneShockHandler {
 
         if (entity.damage(world.getDamageSources().generic(), damage)) {
             LAST_SHOCK_TICK.put(entityId, worldTime);
+
+            // kb scales with damage so a bigger shock means u get bounced a little more
+            double dx = entity.getX() - (sourcePos.getX() + 0.5D);
+            double dz = entity.getZ() - (sourcePos.getZ() + 0.5D);
+            double len = Math.sqrt(dx * dx + dz * dz);
+            if (len <= 1e-6) {
+                dx = (Math.random() - 0.5D);
+                dz = (Math.random() - 0.5D);
+                len = Math.sqrt(dx * dx + dz * dz);
+            }
+            dx /= len;
+            dz /= len;
+
+            double knockbackStrength = Math.min(1.5D, 0.2D + (damage * 0.15D));
+            entity.takeKnockback(knockbackStrength, dx, dz);
         }
     }
 
